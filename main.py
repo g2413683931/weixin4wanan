@@ -331,9 +331,9 @@ if __name__ == "__main__":
     #获取星座运势
     xzys = get_xzys()
     #获取星座概括
-    waxy = get_waxy()
-    #晚安星语
     jrgk = get_jrgk()
+    #晚安星语
+    waxy = get_waxy()
     # 公众号推送消息
     for user in users:
         send_message(user, accessToken, city, weather, max_temperature, min_temperature, note_ch, note_en,qinghua,riji,kqzl,xzys,jrgk,waxy)
