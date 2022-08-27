@@ -185,7 +185,7 @@ def get_waxy():
     r = get(url, headers=headers)
     b = r.json()["newslist"]
     c=b[0]
-    waxy=c["content"]
+    qinghua=c["content"]
     return waxy
 
 def send_message(to_user, access_token, city_name, weather, max_temperature, min_temperature, note_ch, note_en,qinghua,riji,kqzl,xzys,jrgk):
