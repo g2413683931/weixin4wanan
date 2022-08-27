@@ -184,7 +184,7 @@ def get_waxy():
     }
     r = get(url, headers=headers)
     b = r.json()["newslist"]
-    c=b[8]
+    c=b[0]
     qinghua=c["content"]
     return waxy
 
