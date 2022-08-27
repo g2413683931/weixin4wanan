@@ -6,6 +6,8 @@ from datetime import datetime, date
 from zhdate import ZhDate
 import sys
 import os
+import http.client, urllib
+import json
 
 
 def get_color():
@@ -175,18 +177,15 @@ def get_jrgk():
     jrgk=c["content"]
     return jrgk
 
-def get_waxy():
-    url = "http://api.tianapi.com/tiangou/index?key=948dbc24e9c06eeb7aa24df88f058579"
-    headers = {
-        'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
-    }
-    r = get(url, headers=headers)
-    b = r.json()["newslist"]
-    c=b[0]
-    qinghua=c["content"]
-    return waxy
+def waxy():
+    conn = http.client.HTTPSConnection('api.tianapi.com')  #接口域名
+    params = urllib.parse.urlencode({'key':'948dbc24e9c06eeb7aa24df88f058579'})
+    headers = {'Content-type':'application/x-www-form-urlencoded'}
+    conn.request('POST','/lzmy/index',params,headers)
+    res = conn.getresponse()
+    data = res.read()
+    data = json.loads(data)
+    return data["newslist"][0]["saying"]
 
 def send_message(to_user, access_token, city_name, weather, max_temperature, min_temperature, note_ch, note_en,qinghua,riji,kqzl,xzys,jrgk,waxy):
     url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)
@@ -333,7 +332,7 @@ if __name__ == "__main__":
     #获取星座概括
     jrgk = get_jrgk()
     #晚安星语
-    waxy = get_waxy()
+    waxy = waxy()
     # 公众号推送消息
     for user in users:
         send_message(user, accessToken, city, weather, max_temperature, min_temperature, note_ch, note_en,qinghua,riji,kqzl,xzys,jrgk,waxy)
