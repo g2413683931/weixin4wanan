@@ -110,8 +110,85 @@ def get_ciba():
     note_ch = r.json()["note"]
     return note_ch, note_en
 
+def get_qinghua():
+    url = "http://api.tianapi.com/caihongpi/index?key=eefc5fa1e2cd04fb70680838cf1787b7"
+    headers = {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+    }
+    r = get(url, headers=headers)
+    b = r.json()["newslist"]
+    c=b[0]
+    qinghua=c["content"]
+    return qinghua
 
-def send_message(to_user, access_token, city_name, weather, max_temperature, min_temperature, note_ch, note_en):
+def get_riji():
+    url = "http://api.tianapi.com/tiangou/index?key=eefc5fa1e2cd04fb70680838cf1787b7"
+    headers = {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+    }
+    r = get(url, headers=headers)
+    b = r.json()["newslist"]
+    c=b[0]
+    riji=c["content"]
+    return riji
+
+def get_kqzl():
+    url = "http://api.tianapi.com/aqi/index?key=eefc5fa1e2cd04fb70680838cf1787b7&area=%E8%A5%BF%E5%AE%89%E5%B8%82"
+    headers = {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+    }
+    r = get(url, headers=headers)
+    b = r.json()["newslist"]
+    c=b[0]
+    kqzl=c["quality"]
+    return kqzl
+
+def get_xzys():
+    url = "http://api.tianapi.com/star/index?key=eefc5fa1e2cd04fb70680838cf1787b7&astro=%E9%87%91%E7%89%9B%E5%BA%A7"
+    headers = {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+    }
+    r = get(url, headers=headers)
+    b = r.json()["newslist"]
+    c=b[3]
+    xzys=c["content"]
+    return xzys
+
+def get_jrgk():
+    url = "http://api.tianapi.com/star/index?key=eefc5fa1e2cd04fb70680838cf1787b7&astro=%E9%87%91%E7%89%9B%E5%BA%A7"
+    headers = {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+    }
+    r = get(url, headers=headers)
+    b = r.json()["newslist"]
+    c=b[8]
+    jrgk=c["content"]
+    return jrgk
+
+def get_waxy():
+    url = "http://api.tianapi.com/tiangou/index?key=948dbc24e9c06eeb7aa24df88f058579"
+    headers = {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
+    }
+    r = get(url, headers=headers)
+    b = r.json()["newslist"]
+    c=b[0]
+    waxy=c["content"]
+    return waxy
+
+def send_message(to_user, access_token, city_name, weather, max_temperature, min_temperature, note_ch, note_en,qinghua,riji,kqzl,xzys,jrgk):
     url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)
     week_list = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
     year = localtime().tm_year
@@ -165,9 +242,34 @@ def send_message(to_user, access_token, city_name, weather, max_temperature, min
                 "value": note_en,
                 "color": get_color()
             },
+            "qinghua":{
+                "value":qinghua,
+                "color":get_color()
+            },
+            "riji": {
+                "value": riji,
+                "color": get_color()
+            },
+            "kqzl": {
+                "value": kqzl,
+                "color": get_color()
+            },
+            "xzys": {
+                "value": xzys,
+                "color": get_color()
+            },
+            "jrgk": {
+                "value": jrgk,
+                "color": get_color()
+            },
+            "waxy": {
+                "value": waxy,
+                "color": get_color()
+            },
             "note_ch": {
                 "value": note_ch,
                 "color": get_color()
+                
             }
         }
     }
@@ -220,7 +322,19 @@ if __name__ == "__main__":
     weather, max_temperature, min_temperature = get_weather(province, city)
     # 获取词霸每日金句
     note_ch, note_en = get_ciba()
+    #获取情话文案
+    qinghua = get_qinghua()
+    #舔狗日记
+    riji = get_riji()
+    #获取空气质量
+    kqzl = get_kqzl()
+    #获取星座运势
+    xzys = get_xzys()
+    #获取星座概括
+    waxy = get_waxy()
+    #晚安星语
+    jrgk = get_jrgk()
     # 公众号推送消息
     for user in users:
-        send_message(user, accessToken, city, weather, max_temperature, min_temperature, note_ch, note_en)
+        send_message(user, accessToken, city, weather, max_temperature, min_temperature, note_ch, note_en,qinghua,riji,kqzl,xzys,jrgk,waxy)
     os.system("pause")
